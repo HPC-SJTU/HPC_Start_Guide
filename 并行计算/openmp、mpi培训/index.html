@@ -967,7 +967,7 @@
 <p><img alt="" src="../image-20240824221432830.png" /></p>
 <ul>
 <li>
-<p><code>static</code>：静态调度将循环的迭代均匀分配给所有线程，并且相邻的迭代会被分配在同一个进程，分配在程序开始执行时就已经确定。</p>
+<p><code>static</code>：静态调度将循环的迭代均匀分配给所有线程，并且相邻的迭代会被分配在同一个线程，分配方式在程序开始执行时就已经确定。</p>
 <p><strong>示例</strong>:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#pragma omp parallel for schedule(static, 3)</span>
 <span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
