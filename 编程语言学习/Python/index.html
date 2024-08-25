@@ -803,18 +803,22 @@
 <li><a href="https://www.runoob.com/python3/python3-dictionary.html">字典（Dictionary）</a>：定义、键值对、字典操作</li>
 <li><a href="https://www.runoob.com/python3/python3-set.html">集合（Set）</a>：定义、集合操作</li>
 </ul>
-<p>本部分练习:
-不使用任何第三方库，尝试编写程序使用定积分的定义计算<span class="arithmatex">\(\int_{0}^{1} \frac{1}{x^2+1} \, dx\)</span>的值。</p>
+<p>本部分练习:</p>
+<p>不使用任何第三方库，尝试编写程序使用定积分的定义计算<span class="arithmatex">\(\int_{0}^{1} \frac{1}{x^2+1} \, dx\)</span>的值。</p>
 <h2 id="pytorch">PyTorch<a class="headerlink" href="#pytorch" title="Permanent link">&para;</a></h2>
 <p>PyTorch是一个由Facebook的人工智能研究团队开发的开源深度学习框架，以其易用性、灵活性和强大的功能在科研社区中广受欢迎。其也常常作为AI大模型赛题的实现框架。</p>
 <p><a href="https://pytorch.org/">PyTorch官网</a></p>
 <p>该部分要求掌握PyTorch张量运算的基本规则，（选学）学习编写PyTorch的算子的方法。</p>
-<p>参考链接:
-<a href="https://pytorch.ac.cn/tutorials/beginner/basics/tensorqs_tutorial.html">张量的基本运算</a>
-<a href="https://pytorch.ac.cn/tutorials/advanced/custom_ops_landing_page.html">PyTorch自定义算子手册</a></p>
+<p>参考链接:</p>
+<p><a href="https://pytorch.ac.cn/tutorials/beginner/basics/tensorqs_tutorial.html">张量的基本运算</a></p>
+<p><a href="https://pytorch.ac.cn/tutorials/advanced/custom_ops_landing_page.html">PyTorch自定义算子手册</a></p>
 <p>本部分练习:</p>
 <ol>
-<li>使用PyTorch的张量类型，编写程序使用定积分的定义计算<span class="arithmatex">\(\int_{0}^{y} \frac{1}{x^2+1} \, dx\)</span>的值。（输入:一维torch.Tensor张量，每个数字代表一个y的取值。输出：一维torch.Tensor张量，每个位置对应于输入的y计算得到的定积分的值）</li>
+<li>使用PyTorch的张量类型，编写程序使用定积分的定义计算<span class="arithmatex">\(\int_{0}^{y} \frac{1}{x^2+1} \, dx\)</span>的值<ul>
+<li>输入：一维torch.Tensor张量，每个数字代表一个y的取值。</li>
+<li>输出：一维torch.Tensor张量，每个位置对应于输入的y计算得到的定积分的值。</li>
+</ul>
+</li>
 <li>（选做）自己编写一个PyTorch算子（基于C++或CUDA），输入一个张量x，返回张量<span class="arithmatex">\(\frac{1}{x^2+1}\)</span>。并在python中调用这个算子运用定积分的定义计算<span class="arithmatex">\(\int_{0}^{y} \frac{1}{x^2+1} \, dx\)</span>的值（输入输出要求与1中相同）</li>
 </ol>
 <h2 id="mpi4py">mpi4py（选学）<a class="headerlink" href="#mpi4py" title="Permanent link">&para;</a></h2>
@@ -828,20 +832,20 @@
 <p>hello，mpi4py.</p>
 <ul>
 <li>编写程序运行后打印自己的rank与当前的size并退出。</li>
+</ul>
+</li>
 <li>
 <p>mpi4py库中的点对点通信(ping - pong)</p>
-</li>
-<li>
-<p>编写程序让程序开始运行时0号进程发送'ping'信息给1号进程，1号进程发送'pong'信息给0号进程</p>
-</li>
+<ul>
+<li>编写程序让程序开始运行时0号进程发送'ping'信息给1号进程，1号进程发送'pong'信息给0号进程</li>
 <li>1号进程每次收到0号进程消息后打印输出并等待1s后返回'pong'信息给0号进程</li>
 <li>0号进程每次收到1号进程消息后打印输出并等待1s后返回'ping'信息给0号进程</li>
+</ul>
+</li>
 <li>
 <p>mpi4py库中的集合通信</p>
-</li>
-<li>
-<p>编写函数mpi_np_gather(send_buffer: np.ndarray)-&gt; np.ndarray。</p>
-</li>
+<ul>
+<li>编写函数mpi_np_gather(send_buffer: np.ndarray)-&gt; np.ndarray。</li>
 <li>实现功能:send_buffer为将发送二维的np.ndarray对象，所有进程发送的np.ndarray对象列数相同，行数可以不同。返回值为各个程序的发送的np.ndarray对象按照rank的顺序拼接而成的np.ndarray数组。</li>
 <li>示例：
     <div class="highlight"><pre><span></span><code><span class="c1"># 假设size=4</span>
