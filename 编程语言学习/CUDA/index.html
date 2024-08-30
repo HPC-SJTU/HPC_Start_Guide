@@ -660,7 +660,7 @@
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
-      小试牛刀：
+      小试牛刀
     </span>
   </a>
   
@@ -895,7 +895,7 @@
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
-      小试牛刀：
+      小试牛刀
     </span>
   </a>
   
@@ -935,20 +935,25 @@
 
 
 <h1 id="cuda">CUDA入门<a class="headerlink" href="#cuda" title="Permanent link">&para;</a></h1>
-<blockquote>
-<p>这个并不是一个严格意义上的CUDA入门，只是希望帮助大家更好的去理解CUDA代码的并行性以及其运行在GPU上这个事实</p>
-</blockquote>
+<div class="admonition info">
+<p class="admonition-title">这并不是一个严格意义上的CUDA入门，只是希望帮助大家更好的去理解CUDA代码的并行性以及其运行在GPU上这个事实</p>
+</div>
 <h2 id="cpuc">与运行在CPU上的C代码区别<a class="headerlink" href="#cpuc" title="Permanent link">&para;</a></h2>
 <p>GPU有大量核心，天生具有并行性，因此作为GPU的编程语言，CUDA的编程更类似于并行编程。</p>
-<p>CUDA函数的第一个特点是，我们需要指定这个函数使用的线程数目<code>func&lt;&lt;&lt;gridDim, blockDim&gt;&gt;&gt;(...)</code>，这样指定后，GPU便会将这这些线程分布到其众多核心上并行执行，CUDA函数所干的事情就是安排好每个线程做什么。一般来说，若干线程组成一个block，若干block又组成一个grid，总线程数目就是blockDim * gridDim（注：blockDim和gridDim可以是三维的，为了解释方便我们就认为其是一个数了）。</p>
-<p>CUDA函数的第二个特点是，由于有很多个线程同时执行这个函数，线程与线程之间的执行顺序是完全随机的，我们不能假设线程0，线程1之间可以同时执行完某一部分代码，也不能假定他们有什么特定的先后关系。这就需要我们在CUDA函数中添加同步点，来保证每个线程都可以看到正确的结果。</p>
-<p>CUDA函数的第三个特点是，其只能使用CUDA指针与特定类型的函数，这个也非常好理解，GPU能直接访问的只有它自己的显存，CPU上的内存是不好直接用的。同时如果存在CUDA内部的函数调用，它也只能调用带有__device__属性的CUDA函数以及带有__global__属性的CUDA函数，不能调用C函数。</p>
-<p>CUDA函数的第四个特点是，代码中在调用CUDA函数后，CPU不会等待CUDA函数执行完毕，而是会直接继续执行后面的代码，如果我们没有进行同步，直接调用函数结果的话结果就会出错。
-除了这些，CUDA函数的编写方式基本与C函数相差无几。　　</p>
-<h2 id="_1">小试牛刀：<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>下面的代码使用GPU实现了对数组求和的功能，但是其中有些小bug需要大家来找一下。程序正确运行之后可以对比两个计时点得到的计时，体会正常的C函数与CUDA函数的不同。
-编译方式：nvcc reduce.cu -o reduce
-如果代码看不懂可以问问开源的模型
+<p>CUDA函数主要特点如下:</p>
+<ol>
+<li>我们需要指定这个函数使用的线程数目<code>func&lt;&lt;&lt;gridDim, blockDim&gt;&gt;&gt;(...)</code>，这样指定后，GPU便会将这这些线程分布到其众多核心上并行执行，CUDA函数所干的事情就是安排好每个线程做什么。一般来说，若干线程组成一个block，若干block又组成一个grid，总线程数目就是blockDim * gridDim（注：blockDim和gridDim可以是三维的，为了解释方便我们就认为其是一个数了）。</li>
+<li>由于有很多个线程同时执行这个函数，线程与线程之间的执行顺序是完全随机的，我们不能假设线程0，线程1之间可以同时执行完某一部分代码，也不能假定他们有什么特定的先后关系。这就需要我们在CUDA函数中添加同步点，来保证每个线程都可以看到正确的结果。</li>
+<li>其只能使用CUDA指针与特定类型的函数，这个也非常好理解，GPU能直接访问的只有它自己的显存，CPU上的内存是不好直接用的。同时如果存在CUDA内部的函数调用，它也只能调用带有__device__属性的CUDA函数以及带有__global__属性的CUDA函数，不能调用C函数。</li>
+<li>代码中在调用CUDA函数后，CPU不会等待CUDA函数执行完毕，而是会直接继续执行后面的代码，如果我们没有进行同步，直接调用函数结果的话结果就会出错。</li>
+</ol>
+<p>除了这些，CUDA函数的编写方式基本与C函数相差无几。　　</p>
+<h2 id="_1">小试牛刀<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>下面的代码使用GPU实现了对数组求和的功能，但是其中有些小bug需要大家来找一下。程序正确运行之后可以对比两个计时点得到的计时，体会正常的C函数与CUDA函数的不同。</p>
+<p>编译方式：
+<div class="highlight"><pre><span></span><code>nvcc<span class="w"> </span>reduce.cu<span class="w"> </span>-o<span class="w"> </span>reduce
+</code></pre></div></p>
+<p>如果代码看不懂可以问问开源的模型
 <div class="highlight"><pre><span></span><code><span class="c1">// reduce.cu</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cuda_runtime.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
