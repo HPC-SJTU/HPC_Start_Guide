@@ -1301,10 +1301,11 @@
 <span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
 <span class="cm">/*</span>
 <span class="cm">sendbuf: 发送数据的起始地址。</span>
+<span class="cm">send_count：具体需要给每个进程发送的数据的个数</span>
+<span class="cm">sendtype：数据类型。</span>
 <span class="cm">recvbuf: 接收结果的地址（仅根进程使用）。</span>
-<span class="cm">count: 数据元素个数。</span>
-<span class="cm">datatype: 数据类型。</span>
-<span class="cm">op: 归约操作（如MPI_SUM、MPI_MIN）。</span>
+<span class="cm">recvcount: 接受数据元素个数。</span>
+<span class="cm">recvtype: 数据类型。</span>
 <span class="cm">root: 接收结果的根进程编号。</span>
 <span class="cm">comm: 通信子。</span>
 <span class="cm">*/</span>
