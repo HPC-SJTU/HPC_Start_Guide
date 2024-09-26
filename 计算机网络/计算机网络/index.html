@@ -1395,6 +1395,15 @@ ssh<span class="w"> </span>arm_cal<span class="w"> </span><span class="c1"># 连
 <p>登录节点因使用用户较多且存在内置的资源占用限制，使用VSCode开发可能会略显卡顿。</p>
 <p>在考核正式开始后，我们会增加大家的可使用资源量，此时建议提交一个任务专用于VSCode连接进行远程开发。</p>
 </details>
+<details class="danger">
+<summary>请勿使用VSCode连接其他集群</summary>
+<p>由于arm集群和部分基于x86架构的集群共享文件系统，连接到x86集群将会在你的账户下安装x86架构的vscode服务器，导致连接arm集群后无法运行vscode服务器报错连接失败。</p>
+<p>同时本次考核只在arm集群上进行，请大家不要连接其他集群。</p>
+<p>如遇到此问题请先使用命令行登录你的账户，确认自己位于家目录，运行
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>-r<span class="w"> </span>.vscode-server
+</code></pre></div>
+删除已经下载的vscode-server，然后重新连接。</p>
+</details>
 <h2 id="_5">计算机网络安全基础<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="_6">常见的密码算法<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <p>现代的计算机系统通信中采用了大量的密码算法。主要分为三类:</p>
