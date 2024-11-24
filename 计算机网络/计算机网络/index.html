@@ -1485,6 +1485,10 @@ Host arm_cal
   HostName $CALCULATOR_NODE_NAME 
   User $YOUR_USERNAME
   ProxyJump arm
+  # 使用的私钥文件地址
+  IdentityFile C:\Users\&lt;用户名&gt;\.ssh\id_rsa
+  # 使用的证书文件地址
+  IdentityFile $CERT_PATH
 </code></pre></div>
 <p>之后即可使用命令行与VScode进行免密登录。</p>
 <h2 id="_6">计算机网络安全基础<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
