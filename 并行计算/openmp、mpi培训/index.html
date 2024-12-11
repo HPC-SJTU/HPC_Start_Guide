@@ -1,0 +1,1709 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="HPC入门指南">
+      
+      
+        <meta name="author" content="HPC@SJTU">
+      
+      
+      
+        <link rel="prev" href="../../%E7%BC%96%E8%AF%91/complex/">
+      
+      
+        <link rel="next" href="../SIMD/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
+    
+    
+      
+        <title>OpenMP与MPI - HPC入门指南</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ompmpi" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="HPC入门指南" class="md-header__button md-logo" aria-label="HPC入门指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HPC入门指南
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenMP与MPI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换至深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换至深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="切换至浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换至浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="HPC入门指南" class="md-nav__button md-logo" aria-label="HPC入门指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    HPC入门指南
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    欢迎
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    信息素养
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            信息素养
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E4%BF%A1%E6%81%AF%E7%B4%A0%E5%85%BB/%E4%BF%A1%E6%81%AF%E7%B4%A0%E5%85%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    信息素养
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    入门基础
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            入门基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    入门基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    计算机网络
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            计算机网络
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机网络
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    编程语言学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            编程语言学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    C++
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            C++
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/C%2B%2B%E5%9F%BA%E7%A1%80/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    C++ 基础知识
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/C%2B%2B%E8%BF%9B%E9%98%B6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    C++ 拓展内容
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/Python/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/CUDA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CUDA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    编译
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            编译
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E8%AF%91/simple/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    编译入门
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E8%AF%91/complex/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    编译进阶
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    并行计算
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            并行计算
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    OpenMP与MPI
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    OpenMP与MPI
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      一、培训简介
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      二、并行计算基础：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      三、OpenMP入门：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi" class="md-nav__link">
+    <span class="md-ellipsis">
+      四、MPI入门：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      五、练习题（自测题）
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SIMD/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    向量化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      一、培训简介
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      二、并行计算基础：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      三、OpenMP入门：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi" class="md-nav__link">
+    <span class="md-ellipsis">
+      四、MPI入门：
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      五、练习题（自测题）
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="ompmpi">OMP、MPI培训文档<a class="headerlink" href="#ompmpi" title="Permanent link">&para;</a></h1>
+<h3 id="_1">一、培训简介<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>培训目标：了解并行计算基本概念，掌握不同并行架构的基本代码编写。</li>
+<li>培训内容：并行计算基础、OMP入门、MPI入门。</li>
+<li>预备知识：能无痛阅读C语言代码、并知道C语言中的基本概念。能够区分CPU、核心、内存等基本计算机概念。</li>
+<li>本文的选学自学内容或很简单或很难，为了文档完整性将其列出。学习他们需要自行信息检索，可以参考人工智能和搜索引擎的回答与文档中所列出来的链接。</li>
+<li>本文所列举内容为常用内容，详细信息请参考链接和官方手册。</li>
+</ol>
+<h3 id="_2">二、并行计算基础：<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>参考链接:</p>
+<ul>
+<li><a href="https://blog.csdn.net/magicbean2/article/details/75174859">并行计算(CSDN介绍)</a></li>
+<li><a href="https://computing.llnl.gov/tutorials/parallel_comp/">介绍原文(英文)</a>(推荐阅读)</li>
+</ul>
+<hr />
+<ol>
+<li>
+<p>什么是并行计算</p>
+<p>并行计算是一种通过将任务分解为多个子任务并同时在多个处理器或计算节点上执行的计算方式。它的主要目标是提高计算速度和效率，解决那些单一处理器难以快速处理的大规模问题。简而言之就是充分动用服务器硬件资源，将很大计算量的问题分解给不同的核心完成一部分，最终所有核心协作完成所有任务，以起到加速程序运行的效果。</p>
+<p>并行计算的核心内容：计算任务分解、内存访问模型、并行单元间的通信。</p>
+</li>
+<li>
+<p>并行计算的基本概念</p>
+<ul>
+<li>
+<p>并行性与并发性：<a href="https://blog.csdn.net/u013945548/article/details/50988456">并行（parallel）和并发（concurrency）的区别和联系_并行与并发的区别和联系-CSDN博客</a></p>
+<p>并行性（Parallelism）</p>
+<p><strong>并行性</strong>指的是多个任务在同一时间<strong>同时</strong>执行。并行性通常依赖于多核或多处理器系统，在物理上允许多个任务在不同的处理器或计算核心上并行运行。</p>
+<ul>
+<li><strong>关键点</strong>：实际同时执行多个任务。</li>
+<li><strong>硬件要求</strong>：需要多核处理器或多个处理器。</li>
+<li><strong>示例</strong>：边洗澡边听歌</li>
+</ul>
+<p>并发性（Concurrency）</p>
+<p><strong>并发性</strong>指的是多个任务在系统中<strong>交替进行</strong>，但这些任务<strong>并不一定同时</strong>运行。并发性侧重于任务之间的<strong>逻辑交替</strong>，而非物理上的同时运行。操作系统通过任务调度器快速切换任务，使它们看起来好像是同时运行的，虽然它们实际上在不同的时间片被执行。</p>
+<ul>
+<li><strong>关键点</strong>：多个任务在逻辑上交替进行，但不一定是同时执行的。</li>
+<li><strong>硬件要求</strong>：单核处理器也能支持并发，因为并发主要依赖于操作系统的任务调度机制。</li>
+<li><strong>示例</strong>：边玩手机边看电视</li>
+</ul>
+</li>
+<li>
+<p>任务划分</p>
+<p><strong>负载均衡</strong>：确保任务均匀地分配到所有处理器或核心，避免某些处理器过载而其他处理器闲置。</p>
+<p><strong>任务粒度</strong>：选择适当的任务粒度，以平衡任务的管理开销和计算效率。粒度过细可能导致管理开销过高，粒度过粗可能导致负载不均。</p>
+<p><strong>通信开销</strong>：尽量减少处理器之间的数据交换，优化数据局部性，以降低通信开销。</p>
+<p><strong>同步开销</strong>：减少不同任务之间的同步需求，避免不必要的等待和阻塞。</p>
+<p><strong>可扩展性</strong>：确保任务划分策略能够适应处理器数量的增加，保持系统性能的可扩展性。</p>
+</li>
+<li>
+<p>并行架构（共享内存与分布式内存）</p>
+<p><strong>共享内存架构</strong>（对应OpenMP）：所有处理器共享同一块物理内存。处理器可以直接访问和修改共享的数据。数据共享和同步机制较为直接，不需要显式通信操作。</p>
+<p><strong>分布式内存架构</strong>（对应MPI）：每个处理器或计算节点有独立的内存空间。处理器之间通过消息传递进行数据交换。数据交换和通信需要显式管理。</p>
+</li>
+<li>
+<p>（选学）UMA（统一内存访问）与NUMA（非统一内存访问）内存架构</p>
+</li>
+</ul>
+<p><img alt="image-20240824200853819" src="../image-20240824200853819.png" width="500" /></p>
+</li>
+<li>
+<p>（自学）并行计算的性能指标</p>
+<ul>
+<li>加速比与效率：了解定义</li>
+<li>可扩展性：了解Amdahl定律和Gustafson定律</li>
+</ul>
+</li>
+</ol>
+<h3 id="openmp">三、OpenMP入门：<a class="headerlink" href="#openmp" title="Permanent link">&para;</a></h3>
+<p>参考链接：
+<a href="https://www.cnblogs.com/lfri/p/10111315.html">OpenMP入门教程</a> 系列文章</p>
+<hr />
+<ol>
+<li>
+<p>OpenMP概述</p>
+<ul>
+<li>什么是OpenMP？</li>
+</ul>
+<p>OpenMP（Open Multi-Processing）是一种应用程序接口（API），用于在共享内存的多处理器系统上进行并行编程。它通过在代码中添加指令（pragmas）的方式，让程序员能够简单地将串行代码并行化，而不需要深入底层硬件或复杂的多线程管理。OpenMP支持C、C++和Fortran等语言。</p>
+<ul>
+<li>适用场景：共享内存并行模型</li>
+</ul>
+</li>
+<li>
+<p>OpenMP编程模型</p>
+<ul>
+<li>共享内存模型</li>
+</ul>
+<p><strong>共享内存模型</strong>指的是所有线程在同一个地址空间中共享数据。这意味着不同线程可以访问相同的内存位置，并且可以共享变量的值。</p>
+<p><strong>共享变量</strong>：在并行区域中，默认情况下，大多数变量是共享的，即所有线程都可以访问和修改这些变量的值。</p>
+<p><strong>私有变量</strong>：某些情况下，我们可能希望每个线程拥有变量的私有副本，这样不同线程之间不会相互干扰。OpenMP通过<code>private</code>指令指定这些变量。</p>
+<p><strong>数据竞争（Race Condition）</strong>：由于多个线程同时访问和修改共享变量，可能会导致数据竞争问题。为了避免这种情况，OpenMP提供了同步机制，如<code>critical</code>和<code>atomic</code>等。</p>
+<ul>
+<li>并行区域（Parallel Region）</li>
+</ul>
+<p><strong>并行区域</strong>是OpenMP编程的核心概念。它是由编译器指令<code>#pragma omp parallel</code>指定的一段代码，告诉OpenMP在这段代码中创建多个线程并行执行。</p>
+</li>
+<li>
+<p>OpenMP基本指令</p>
+<ul>
+<li><code>#pragma omp parallel</code></li>
+</ul>
+<p><strong>用途</strong>: 定义一个并行区域，启动多个线程并行执行该区域中的代码。</p>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#pragma omp parallel</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 并行执行的部分</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>#pragma omp for</code></li>
+</ul>
+<p><strong>用途</strong>: 将循环的迭代分配给多个线程并行执行。</p>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#pragma omp parallel for</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 并行执行的循环体</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>#pragma omp single</code></li>
+</ul>
+<p><strong>用途</strong>：指定代码块只由第一个到达线程执行，其他线程跳过该代码块。</p>
+</li>
+<li>
+<p>OpenMP中的同步机制</p>
+<ul>
+<li><code>#pragma omp critical</code></li>
+</ul>
+<p><strong>用途</strong>: 定义一个临界区，保证代码块在同一时刻只被一个线程执行，以防止竞争条件。</p>
+<ul>
+<li><code>#pragma omp barrier</code></li>
+</ul>
+<p><strong>用途</strong>: 强制所有线程在此处同步，确保所有线程都执行到这一步后，才继续执行后续代码。</p>
+</li>
+<li>
+<p>变量的作用域</p>
+<ul>
+<li><code>shared</code>：默认情况下，并行区域外申明的变量在并行区域中是共享的，可以使用<code>shared</code>子句显式指定变量为共享的。</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="cp">#pragma omp parallel for shared(a)</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// a为公有变量</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>private</code>：每个线程在并行区域中有自己独立的变量副本，线程之间相互独立，互不干扰。并行区域内申明的变量默认为私有的，并行区域外申明的变量需要显式申明private</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="cp">#pragma omp parallel for private(a)</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//a,b均为私有变量</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>reduction</code>： 用于将每个线程的私有变量在并行区域结束时进行归约（如求和、求最大值等），最终将结果存储到共享变量中。</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="cp">#pragma omp parallel for reduction(+:sum)</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p>调度方法</p>
+<p><img alt="" src="../image-20240824221432830.png" /></p>
+<ul>
+<li>
+<p><code>static</code>：静态调度将循环的迭代均匀分配给所有线程，并且相邻的迭代会被分配在同一个线程，分配方式在程序开始执行时就已经确定。</p>
+<p><strong>示例</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#pragma omp parallel for schedule(static, 3)</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 每个线程执行3个连续的迭代</span>
+<span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>dynamic</code>：动态调度在执行时分配迭代，每当一个线程完成当前分配的迭代时，它会动态获取下一个块的迭代。</p>
+</li>
+<li>
+<p><code>guided</code>：引导调度是一种动态调度的变体，但块大小（chunk size）随着任务的完成而逐渐减小。</p>
+</li>
+<li>
+<p><code>auto</code>：自动调度将调度策略的选择权交给编译器或运行时库，由它们决定最佳的调度方式。</p>
+</li>
+<li>
+<p><code>runtime</code>：运行时调度允许在程序运行时通过环境变量设置调度策略。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>环境变量</p>
+<ul>
+<li>OMP_SCHEDULE：负责规定调度方式。</li>
+<li>OMP_NUM_THREADS：设置执行期间要使用的最大线程数。</li>
+<li>OMP_PROC_BIND：启用或禁用线程绑定到处理器。有效值为TRUE或FALSE。</li>
+<li>OMP_STACKSIZE：控制创建（非主）线程的堆栈大小。</li>
+</ul>
+</li>
+</ol>
+<h3 id="mpi">四、MPI入门：<a class="headerlink" href="#mpi" title="Permanent link">&para;</a></h3>
+<p>参考链接:</p>
+<ul>
+<li><a href="https://mpitutorial.com/tutorials/">Tutorials · MPI Tutorial</a></li>
+<li><a href="https://jinbridger.github.io/docs/hpc/openmpi-programming-101/">Open MPI 入门笔记 | JinBridge</a></li>
+<li><a href="https://www.codingame.com/playgrounds/349/introduction-to-mpi/introduction-to-distributed-computing">Coding Games and Programming Challenges to Code Better</a></li>
+<li><a href="https://www.cnblogs.com/kangxinxin/p/10028931.html">MPI之聚合通信-Scatter，Gather，Allgather</a></li>
+</ul>
+<hr />
+<ol>
+<li>
+<p>MPI概述</p>
+<ul>
+<li>什么是MPI？</li>
+</ul>
+<p><strong>MPI</strong>（<strong>Message Passing Interface</strong>，消息传递接口）为在分布式内存架构下的进程间通信提供了规范和库支持。在程序的角度，MPI就是一系列函数接口，他们可以实现不同进程（不同内存区域）之间的消息传递</p>
+<ul>
+<li>适用场景：分布式内存并行模型</li>
+</ul>
+</li>
+<li>
+<p>MPI编程模型</p>
+<ul>
+<li>
+<p>分布式内存模型</p>
+<p>在分布式内存模型中，各个处理节点可以独立运行自己的进程，使用自己的本地内存来存储和处理数据。每个进程的内存是私有的，其他进程无法直接访问它们。如果一个进程需要访问另一个进程的数据，就必须通过显式的消息传递机制将数据从一个进程发送到另一个进程。同一个节点（服务器）内部需要借助高速数据总线等硬件实现，而跨节点的通信通常由网络连接来实现，比如通过高速以太网、IB（InfiniBand）等。</p>
+</li>
+<li>
+<p>MPI的核心概念</p>
+<ul>
+<li><strong>进程</strong>: 在MPI中，每个计算任务由一个或多个进程执行。进程是独立的计算实体，有自己的内存空间。MPI程序通常启动多个进程，这些进程在分布式内存系统中运行。</li>
+<li><strong>通信</strong>: MPI通过消息传递的方式进行进程间通信。主要有两种通信方式：<ul>
+<li><strong>点对点通信（Point-to-Point Communication）</strong>: 两个进程之间直接传递消息。例如，进程A发送数据给进程B。</li>
+<li><strong>集体通信（Collective Communication）</strong>: 多个进程之间进行数据传递或同步操作。例如，广播（broadcast）、归约（reduce）等操作。</li>
+</ul>
+</li>
+<li><strong>通信协议</strong>: MPI提供了多种通信协议，如阻塞通信（Blocking）、非阻塞通信（Non-blocking）、同步通信（Synchronous）等。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>MPI基础函数接口</p>
+<ul>
+<li>
+<p>初始化与终止</p>
+<ul>
+<li>
+<p><code>MPI_Init</code>：初始化MPI环境，必须在任何MPI调用之前调用。</p>
+<div class="highlight"><pre><span></span><code><span class="n">MPI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Finalize</code>：结束MPI环境，释放MPI使用的资源。</p>
+<div class="highlight"><pre><span></span><code><span class="n">MPI_Finalize</span><span class="p">();</span>
+</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p>获取进程信息</p>
+<ul>
+<li>
+<p><code>MPI_Comm_size</code>：获取通信子（communicator）中进程的总数。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">world_size</span><span class="p">;</span>
+<span class="n">MPI_Comm_size</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">world_size</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Comm_rank</code>：获取当前进程在通信子中的编号（从0开始）。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">world_rank</span><span class="p">;</span>
+<span class="n">MPI_Comm_rank</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">world_rank</span><span class="p">);</span>
+</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p>点对点通信</p>
+<ul>
+<li>
+<p><code>MPI_Send</code>：发送消息到指定的进程。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Send</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datatype</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="cm">/*</span>
+<span class="cm">buf: 发送数据的起始地址。</span>
+<span class="cm">count: 要发送的数据元素个数。</span>
+<span class="cm">datatype: 数据类型（如MPI_INT、MPI_FLOAT）。</span>
+<span class="cm">dest: 目标进程的编号。</span>
+<span class="cm">tag: 消息标识，用于匹配接收消息。</span>
+<span class="cm">comm: 通信子</span>
+<span class="cm">*/</span>
+<span class="c1">//示例</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+<span class="n">MPI_Send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Recv</code>：接收来自指定进程的消息。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Recv</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datatype</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">,</span><span class="w">                   </span><span class="n">MPI_Status</span><span class="w"> </span><span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="cm">/*</span>
+<span class="cm">buf: 接收数据的起始地址。</span>
+<span class="cm">count: 可接收的数据元素个数。</span>
+<span class="cm">datatype: 数据类型（如MPI_INT、MPI_FLOAT）。</span>
+<span class="cm">source: 源进程的编号。</span>
+<span class="cm">tag: 消息标识，用于匹配接收消息。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">status: 返回状态信息的结构体指针（可以传递MPI_STATUS_IGNORE忽略）。</span>
+<span class="cm">*/</span>
+<span class="c1">//示例</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">;</span>
+<span class="n">MPI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_STATUS_IGNORE</span><span class="p">);</span>
+</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p>集合通信</p>
+<ul>
+<li>
+<p><code>MPI_Bcast</code>：将一条消息从一个进程广播到通信子中的所有进程。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Bcast</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datatype</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">)</span>
+<span class="cm">/*</span>
+<span class="cm">buffer: 广播数据的起始地址。</span>
+<span class="cm">count: 数据元素个数。</span>
+<span class="cm">datatype: 数据类型（如MPI_INT、MPI_FLOAT）。</span>
+<span class="cm">root: 广播的源进程编号。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">*/</span>
+<span class="c1">//示例</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Scatter</code>：将根进程的数据分散（scatter）到所有进程中。每个进程接收根进程提供的数据的一部分。与bcast相比
+<img alt="" src="" title="image-20240824231812131.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Scatter</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">sendbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">sendcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">sendtype</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">recvbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">recvcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">recvtype</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="cm">/*</span>
+<span class="cm">sendbuf: 发送数据的起始地址。</span>
+<span class="cm">send_count：具体需要给每个进程发送的数据的个数</span>
+<span class="cm">sendtype：数据类型。</span>
+<span class="cm">recvbuf: 接收结果的地址（仅根进程使用）。</span>
+<span class="cm">recvcount: 接受数据元素个数。</span>
+<span class="cm">recvtype: 数据类型。</span>
+<span class="cm">root: 接收结果的根进程编号。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">*/</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Reduce</code>：对来自所有进程的数据进行归约操作（如求和、求最小值），并将结果发送到根进程。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Reduce</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">sendbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">recvbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datatype</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Op</span><span class="w"> </span><span class="n">op</span><span class="p">,</span><span class="w">                 </span><span class="kt">int</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="cm">/*</span>
+<span class="cm">sendbuf: 发送数据的起始地址。</span>
+<span class="cm">recvbuf: 接收结果的地址（仅根进程使用）。</span>
+<span class="cm">count: 数据元素个数。</span>
+<span class="cm">datatype: 数据类型。</span>
+<span class="cm">op: 归约操作（如MPI_SUM、MPI_MIN）。</span>
+<span class="cm">root: 接收结果的根进程编号。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">*/</span>
+<span class="c1">//示例</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">local_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">local_data</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_SUM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Gather</code>：将各进程的数据收集到根进程中。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Gather</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">sendbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">sendcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">sendtype</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">recvbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w">                    </span><span class="n">recvcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">recvtype</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="cm">/*</span>
+<span class="cm">sendbuf: 发送数据的起始地址。</span>
+<span class="cm">sendcount: 每个进程发送的数据元素个数。</span>
+<span class="cm">sendtype: 发送数据的数据类型。</span>
+<span class="cm">recvbuf: 接收数据的地址（仅根进程使用）。</span>
+<span class="cm">recvcount: 每个进程发送的数据元素个数（接收方）。</span>
+<span class="cm">recvtype: 接收数据的数据类型。</span>
+<span class="cm">root: 接收结果的根进程编号。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">*/</span>
+<span class="c1">//示例</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">local_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">gathered_data</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="n">MPI_Gather</span><span class="p">(</span><span class="o">&amp;</span><span class="n">local_data</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="n">gathered_data</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>MPI_Allgather</code>：将所有进程的部分数据汇总到所有进程。每个进程在所有进程中接收到所有其他进程的数据。</p>
+<p><img alt="" src="../image-20240824232219588.png" width="300" />
+<img alt="" src="../image-20240824232237119.png" width="300" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1">//接口细节</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">MPI_Allgather</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">sendbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">sendcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">sendtype</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                  </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">recvbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">recvcount</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">recvtype</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                  </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+
+<span class="cm">/*</span>
+<span class="cm">sendbuf: 每个进程要发送的数据的缓冲区指针。</span>
+<span class="cm">sendcount: 每个进程发送的数据元素个数。</span>
+<span class="cm">sendtype: 发送数据的类型。</span>
+<span class="cm">recvbuf: 每个进程接收数据的缓冲区的指针。</span>
+<span class="cm">recvcount: 每个进程接收的数据元素个数。</span>
+<span class="cm">recvtype: 接收数据的类型。</span>
+<span class="cm">comm: 通信子。</span>
+<span class="cm">*/</span>
+</code></pre></div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>MPI中的同步与异步通信</p>
+<ul>
+<li>
+<p>阻塞通信 vs. 非阻塞通信</p>
+<ul>
+<li><strong>阻塞通信</strong>是指在通信操作完成之前，调用该通信函数的进程会被阻塞（即等待）。这意味着在通信操作完成之前，进程无法继续执行后续的操作。这种通信方法实现较为简单，但是可能会导致进程等待，特别是在进行大量通信操作时影响性能。适用于简单的通信场景。</li>
+<li><strong>非阻塞通信</strong>允许进程在发送或接收数据的同时继续执行其他计算任务。通信操作的完成会在稍后的时间自动进行，可以与计算任务重叠，提高性能，但是编程复杂度较高，需要显式检查通信完成状态。</li>
+</ul>
+</li>
+<li>
+<p><code>MPI_Isend</code>、<code>MPI_Irecv</code>、<code>MPI_Wait</code>（选学）： <code>MPI_Isend</code> 非阻塞地发送数据， <code>MPI_Irecv</code> 非阻塞地接收数据。<code>MPI_Wait</code> 用于确保非阻塞操作完成之后再继续执行后续代码。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>MPI中的数据类型与通讯域/通信子/通讯器（选学）</p>
+<ul>
+<li>
+<p><code>MPI_Datatype</code>：MPI提供了内置和自定义数据类型，用于定义数据的格式和结构。自定义数据类型允许更复杂的数据组织和传输。</p>
+</li>
+<li>
+<p><code>MPI_Comm</code>：MPI中的通信域定义了进程的集合，这些进程可以在同一通信域内进行数据交换。MPI提供了默认通信域和创建自定义通信域的功能，以支持不同的并行计算模式和需求。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="_3">五、练习题（自测题）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>OpenMP：</p>
+<ol>
+<li>创建4个线程，输出“hello world from thread %d”，%d为当前线程的编号，多运行几次试试有什么区别？你对数据竞争这一现象是不是有了新的体会呢？</li>
+<li>
+<p>尝试优化以下简单向量加法代码，用openmp并行即可(将以下代码拷贝保存为vector_add.c)</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;omp.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;time.h&gt;</span>
+
+<span class="cp">#define N 10000000  </span><span class="c1">// 向量大小</span>
+
+<span class="c1">// 初始化向量</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">initialize_vector</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 串行向量加法</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">vector_add_serial</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// OpenMP并行化向量加法，唯一需要修改的地方</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">vector_add_parallel</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">//main函数只是作为驱动测试，不需要修改</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">c_serial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">c_parallel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// 初始化向量a和b</span>
+<span class="w">    </span><span class="n">initialize_vector</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">    </span><span class="n">initialize_vector</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 测量串行向量加法时间</span>
+<span class="w">    </span><span class="kt">clock_t</span><span class="w"> </span><span class="n">start_serial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">vector_add_serial</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c_serial</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">clock_t</span><span class="w"> </span><span class="n">end_serial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">time_serial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">end_serial</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_serial</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">CLOCKS_PER_SEC</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 测量并行向量加法时间</span>
+<span class="w">    </span><span class="kt">clock_t</span><span class="w"> </span><span class="n">start_parallel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">vector_add_parallel</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c_parallel</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">clock_t</span><span class="w"> </span><span class="n">end_parallel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">time_parallel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">end_parallel</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_parallel</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">CLOCKS_PER_SEC</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 检查串行和并行结果是否一致</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">correct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c_serial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">c_parallel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">correct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">correct</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Results are correct.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Results are incorrect.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 输出时间对比</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Serial Time: %f seconds</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time_serial</span><span class="p">);</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Parallel Time: %f seconds</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">time_parallel</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 释放内存</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">c_serial</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">c_parallel</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>如果你要在ide（如codeblocks、vscode、vs）等地方运行，请信息检索如何配置环境。如果你在命令行上运行，参考以下编译运行方法：</p>
+<div class="highlight"><pre><span></span><code>gcc<span class="w"> </span>-fopenmp<span class="w"> </span>vector_add.c<span class="w"> </span>-o<span class="w"> </span>vector_add
+./vector_add
+</code></pre></div>
+</li>
+<li>
+<p>（选做）蒙特卡洛算法估算<span class="arithmatex">\(\pi\)</span>。做法如下：在[0,1]内随机生成两个数字作为一个点的x，y坐标，计算该点到坐标原点的距离，判断距离是否小于1。如此重复很多很多次，记录下距离小于1的点的个数。用距离小于1的点的个数除以总实验次数，这个值将会是 <span class="arithmatex">\(\frac{\pi}{4}\)</span>。没错，就是用频率估计概率+几何概型。尝试实现串行版本代码，并修改为openmp并行版本，在很大试验次数的情况下对比运行时间（计时方法可以参考上一题的#include <time.h>）</p>
+</li>
+</ol>
+<p>MPI：完成以下网站中的代码题，其中非阻塞通信部分选做</p>
+<p><a href="https://www.codingame.com/playgrounds/349/introduction-to-mpi/introduction-to-distributed-computing">Coding Games and Programming Challenges to Code Better (codingame.com)</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../../%E7%BC%96%E8%AF%91/complex/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 编译进阶">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                编译进阶
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../SIMD/" class="md-footer__link md-footer__link--next" aria-label="下一页: 向量化">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                向量化
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Brought to you by <a href="https://github.com/HPC-SJTU">Xflops@SJTU</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.action.edit", "content.action.view", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.af256bd8.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
